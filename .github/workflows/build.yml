@@ -1,0 +1,151 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+    types: [opened, synchronize, reopened]
+jobs:
+  build-win:
+    name: Build Windows
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        arch:
+          - x64
+        include:
+          - arch: x64
+            platform: x64
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1.3
+
+      - name: Generate project files
+        run: cmd /C call generate.bat
+
+      - name: Set up problem matching
+        uses: ammaraskar/msvc-problem-matcher@master
+
+      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/xlabs-master-tool.sln
+
+      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: Windows ${{matrix.configuration}} ${{matrix.arch}} binaries
+          path: |
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.exe
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.pdb
+
+  build-lin:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        arch:
+          - x64
+        include:
+          - configuration: Debug
+            config: debug
+          - configuration: Release
+            config: release
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Install dependencies (x64)
+        if: matrix.arch == 'x64'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libcurl4-gnutls-dev
+
+      - name: Generate project files
+        run: ./generate.sh
+
+      - name: Set up problem matching
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+        run: |
+          pushd build
+          make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
+        shell: bash
+        env:
+         CC:   gcc-11
+         CXX:  g++-11
+
+      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: Linux ${{matrix.configuration}} ${{matrix.arch}} binaries
+          path: |
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool
+
+  build-mac:
+    name: Build macOS
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        arch:
+          - x64
+          - ARM64
+        include:
+          - configuration: Debug
+            config: debug
+          - configuration: Release
+            config: release
+          - arch: x64
+            platform: x64
+          - arch: ARM64
+            platform: arm64
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Generate project files
+        run: ./generate.sh
+
+      - name: Set up problem matching
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+        run: |
+          pushd build
+          make config=${{matrix.config}}_${{matrix.platform}} -j$(sysctl -n hw.logicalcpu)
+
+      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: macOS ${{matrix.configuration}} ${{matrix.arch}} binaries
+          path: |
+            build/bin/${{matrix.platform}}/${{matrix.configuration}}/xlabs-master-tool
