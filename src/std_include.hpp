@@ -37,12 +37,6 @@
 
 #else
 
-#pragma GCC diagnostic push
-#ifndef __APPLE__
-#pragma GCC diagnostic ignored "-Wbool-compare"
-#endif
-#pragma GCC diagnostic ignored "-Wlogical-not-parentheses"
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -91,6 +85,5 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "urlmon.lib" )
 #pragma comment(lib, "iphlpapi.lib")
-#else
-#pragma GCC diagnostic pop
+
 #endif

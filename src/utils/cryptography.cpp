@@ -128,7 +128,7 @@ namespace utils::cryptography
 
 	ecc::key::key()
 	{
-		ZeroMemory(&this->key_storage_, sizeof(this->key_storage_));
+		std::memset(&this->key_storage_, 0, sizeof(this->key_storage_));
 	}
 
 	ecc::key::~key()
@@ -153,7 +153,7 @@ namespace utils::cryptography
 		if (this != &obj)
 		{
 			std::memmove(&this->key_storage_, &obj.key_storage_, sizeof(this->key_storage_));
-			ZeroMemory(&obj.key_storage_, sizeof(obj.key_storage_));
+			std::memset(&obj.key_storage_, 0, sizeof(obj.key_storage_));
 		}
 
 		return *this;
@@ -205,7 +205,7 @@ namespace utils::cryptography
 		                         ul(pub_key_buffer.size()),
 		                         &this->key_storage_) != CRYPT_OK)
 		{
-			ZeroMemory(&this->key_storage_, sizeof(this->key_storage_));
+			std::memset(&this->key_storage_, 0, sizeof(this->key_storage_));
 		}
 	}
 
@@ -217,7 +217,7 @@ namespace utils::cryptography
 		               &this->key_storage_) != CRYPT_OK
 		)
 		{
-			ZeroMemory(&this->key_storage_, sizeof(this->key_storage_));
+			std::memset(&this->key_storage_, 0, sizeof(this->key_storage_));
 		}
 	}
 
@@ -241,7 +241,7 @@ namespace utils::cryptography
 			ecc_free(&this->key_storage_);
 		}
 
-		ZeroMemory(&this->key_storage_, sizeof(this->key_storage_));
+		std::memset(&this->key_storage_, 0, sizeof(this->key_storage_));
 	}
 
 	bool ecc::key::operator==(key& key) const
