@@ -23,21 +23,26 @@ namespace
 	std::string format_command(const bool add)
 	{
 		std::string cmd = "\xFF\xFF\xFF\xFFpatchkill";
+		const auto line = [&cmd](const std::string& text)
+		{
+			cmd.append(" ");
+			cmd.append(text);
+		};
 
 		const auto current_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 		const std::string to_sign = std::to_string(current_timestamp.count());
 
-		cmd += " " + to_sign;
+		line(to_sign);
 
 		const auto signed_timestamp = utils::cryptography::ecc::sign_message(key, to_sign);
 
-		cmd += " " + utils::cryptography::base64::encode(signed_timestamp);
+		line(utils::cryptography::base64::encode(signed_timestamp));
 
-		cmd += " " + (add ? "add"s : "remove"s);
+		line((add ? "add"s : "remove"s));
 
-		cmd += " " + (add ? std::string(to_kill) : std::string(to_remove));
+		line((add ? std::string(to_kill) : std::string(to_remove)));
 
-		cmd += " " + std::string(reason);
+		line(std::string(reason));
 
 		return cmd;
 	}
@@ -45,7 +50,6 @@ namespace
 	void unsafe_main()
 	{
 		key = crypto_key::get();
-		console::log("Loaded cryptographic key %llX", key.get_hash());
 
 		network::address master(master_address);
 		master.set_port(master_port);
