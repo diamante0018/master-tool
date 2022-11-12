@@ -1,6 +1,5 @@
-#pragma once
-
 #ifdef _WIN32
+#pragma once
 
 #pragma warning(push)
 #pragma warning(disable: 4018)
