@@ -83,10 +83,6 @@ if os.istarget("linux") or os.istarget("darwin") then
 	linkoptions "-pthread"
 end
 
-if _OPTIONS["dev-build"] then
-	defines "DEV_BUILD"
-end
-
 if os.getenv("CI") then
 	defines "CI"
 end
