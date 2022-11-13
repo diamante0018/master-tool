@@ -97,7 +97,7 @@ int main(const int argc, const char** argv)
 	// Parse command-line flags
 	for (auto i = 1; i < argc; i++)
 	{
-		if(std::strcmp(argv[i], "-master") == 0)
+		if (std::strcmp(argv[i], "-master") == 0)
 		{
 			master_address = argv[++i];
 		}
