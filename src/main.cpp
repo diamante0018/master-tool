@@ -30,7 +30,7 @@ namespace
 		};
 
 		const auto current_timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
-		const std::string to_sign = std::to_string(current_timestamp.count());
+		const auto to_sign = std::to_string(current_timestamp.count());
 
 		line(to_sign);
 
