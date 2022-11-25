@@ -69,7 +69,7 @@ filter {"system:windows"}
 filter {}
 
 filter {"system:macosx"}
-	systemversion "11.0"
+	systemversion "12.0"
 filter {}
 
 symbols "On"
