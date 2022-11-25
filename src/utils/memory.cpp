@@ -13,7 +13,7 @@ namespace utils
 
 	void memory::allocator::clear()
 	{
-		std::lock_guard _(this->mutex_);
+		std::lock_guard<std::mutex> _(this->mutex_);
 
 		for (auto& data : this->pool_)
 		{
@@ -25,7 +25,7 @@ namespace utils
 
 	void memory::allocator::free(void* data)
 	{
-		std::lock_guard _(this->mutex_);
+		std::lock_guard<std::mutex> _(this->mutex_);
 
 		const auto j = std::find(this->pool_.begin(), this->pool_.end(), data);
 		if (j != this->pool_.end())
@@ -42,7 +42,7 @@ namespace utils
 
 	void* memory::allocator::allocate(const size_t length)
 	{
-		std::lock_guard _(this->mutex_);
+		std::lock_guard<std::mutex> _(this->mutex_);
 
 		const auto data = memory::allocate(length);
 		this->pool_.push_back(data);
@@ -56,7 +56,7 @@ namespace utils
 
 	char* memory::allocator::duplicate_string(const std::string& string)
 	{
-		std::lock_guard _(this->mutex_);
+		std::lock_guard<std::mutex> _(this->mutex_);
 
 		const auto data = memory::duplicate_string(string);
 		this->pool_.push_back(data);

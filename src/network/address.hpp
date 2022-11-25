@@ -11,15 +11,15 @@ namespace network
 
 		void set_ipv4(in_addr addr);
 		void set_port(unsigned short port);
-		[[nodiscard]] unsigned short get_port() const;
+		GSL_NODISCARD unsigned short get_port() const;
 
-		[[nodiscard]] sockaddr& get_addr();
-		[[nodiscard]] const sockaddr& get_addr() const;
-		[[nodiscard]] sockaddr_in& get_in_addr();
-		[[nodiscard]] const sockaddr_in& get_in_addr() const;
+		GSL_NODISCARD sockaddr& get_addr();
+		GSL_NODISCARD const sockaddr& get_addr() const;
+		GSL_NODISCARD sockaddr_in& get_in_addr();
+		GSL_NODISCARD const sockaddr_in& get_in_addr() const;
 
-		[[nodiscard]] bool is_local() const;
-		[[nodiscard]] std::string to_string(bool with_port = true) const;
+		GSL_NODISCARD bool is_local() const;
+		GSL_NODISCARD std::string to_string(bool with_port = true) const;
 
 		bool operator==(const address& obj) const;
 

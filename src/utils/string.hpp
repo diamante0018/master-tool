@@ -2,96 +2,99 @@
 #include "memory.hpp"
 
 #ifndef ARRAYSIZE
-template <class Type, size_t n>
-size_t ARRAYSIZE(Type (&)[n]) { return n; }
+template <class Type, std::size_t n>
+std::size_t ARRAYSIZE(Type (&)[n]) { return n; }
 #endif
 
-namespace utils::string
+namespace utils
 {
-	template <std::size_t Buffers, std::size_t MinBufferSize>
-	class va_provider final
+	namespace string
 	{
-	public:
-		static_assert(Buffers != 0 && MinBufferSize != 0, "Buffers and MinBufferSize mustn't be 0");
-
-		va_provider() : current_buffer_(0)
-		{
-		}
-
-		char* get(const char* format, va_list ap)
-		{
-			++this->current_buffer_ %= ARRAYSIZE(this->string_pool_);
-			auto entry = &this->string_pool_[this->current_buffer_];
-
-			if (!entry->size || !entry->buffer)
-			{
-				throw std::runtime_error("String pool not initialized");
-			}
-
-			while (true)
-			{
-#ifdef _WIN32
-				const int res = vsnprintf_s(entry->buffer, entry->size, _TRUNCATE, format, ap);
-#else
-				const int res = vsnprintf(entry->buffer, entry->size, format, ap);
-#endif
-
-				if (res > 0) break; // Success
-				if (res == 0) return nullptr; // Error
-
-				entry->double_size();
-			}
-
-			return entry->buffer;
-		}
-
-	private:
-		class entry final
+		template <std::size_t Buffers, std::size_t MinBufferSize>
+		class va_provider final
 		{
 		public:
-			explicit entry(const std::size_t _size = MinBufferSize) : size(_size), buffer(nullptr)
+			static_assert(Buffers != 0 && MinBufferSize != 0, "Buffers and MinBufferSize mustn't be 0");
+
+			va_provider() : current_buffer_(0)
 			{
-				if (this->size < MinBufferSize) this->size = MinBufferSize;
-				this->allocate();
 			}
 
-			~entry()
+			char* get(const char* format, va_list ap)
 			{
-				if (this->buffer) memory::get_allocator()->free(this->buffer);
-				this->size = 0;
-				this->buffer = nullptr;
+				++this->current_buffer_ %= ARRAYSIZE(this->string_pool_);
+				auto entry = &this->string_pool_[this->current_buffer_];
+
+				if (!entry->size || !entry->buffer)
+				{
+					throw std::runtime_error("String pool not initialized");
+				}
+
+				while (true)
+				{
+#ifdef _WIN32
+					const int res = vsnprintf_s(entry->buffer, entry->size, _TRUNCATE, format, ap);
+#else
+					const int res = vsnprintf(entry->buffer, entry->size, format, ap);
+#endif
+
+					if (res > 0) break; // Success
+					if (res == 0) return nullptr; // Error
+
+					entry->double_size();
+				}
+
+				return entry->buffer;
 			}
 
-			void allocate()
+		private:
+			class entry final
 			{
-				if (this->buffer) memory::get_allocator()->free(this->buffer);
-				this->buffer = memory::get_allocator()->allocate_array<char>(this->size + 1);
-			}
+			public:
+				explicit entry(const std::size_t _size = MinBufferSize) : size(_size), buffer(nullptr)
+				{
+					if (this->size < MinBufferSize) this->size = MinBufferSize;
+					this->allocate();
+				}
 
-			void double_size()
-			{
-				this->size *= 2;
-				this->allocate();
-			}
+				~entry()
+				{
+					if (this->buffer) memory::get_allocator()->free(this->buffer);
+					this->size = 0;
+					this->buffer = nullptr;
+				}
 
-			std::size_t size;
-			char* buffer;
+				void allocate()
+				{
+					if (this->buffer) memory::get_allocator()->free(this->buffer);
+					this->buffer = memory::get_allocator()->allocate_array<char>(this->size + 1);
+				}
+
+				void double_size()
+				{
+					this->size *= 2;
+					this->allocate();
+				}
+
+				std::size_t size;
+				char* buffer;
+			};
+
+			std::size_t current_buffer_;
+			entry string_pool_[Buffers];
 		};
 
-		std::size_t current_buffer_;
-		entry string_pool_[Buffers];
-	};
+		const char* va(const char* fmt, ...);
 
-	const char* va(const char* fmt, ...);
+		std::vector<std::string> split(const std::string& s, char delim);
 
-	std::vector<std::string> split(const std::string& s, char delim);
+		std::string to_lower(std::string text);
+		std::string to_upper(std::string text);
+		bool starts_with(const std::string& text, const std::string& substring);
+		bool ends_with(const std::string& text, const std::string& substring);
 
-	std::string to_lower(std::string text);
-	std::string to_upper(std::string text);
-	bool starts_with(const std::string& text, const std::string& substring);
-	bool ends_with(const std::string& text, const std::string& substring);
+		std::string replace(std::string str, const std::string& from, const std::string& to);
 
-	std::string replace(std::string str, const std::string& from, const std::string& to);
-
-	std::string dump_hex(const std::string& data, const std::string& separator = " ");
+		std::string dump_hex(const std::string& data, const std::string& separator = " ");
+	}
 }

@@ -57,11 +57,11 @@ filter "platforms:arm64"
 filter {}
 
 filter {"language:C++", "toolset:not msc*"}
-	buildoptions "-std=c++17"
+	buildoptions "-std=c++14"
 filter {}
 
 filter "toolset:msc*"
-	buildoptions "/std:c++17"
+	buildoptions "/std:c++14"
 filter {}
 
 filter {"system:windows"}
