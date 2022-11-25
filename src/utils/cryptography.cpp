@@ -32,11 +32,6 @@ namespace utils
 				}
 			} ___;
 
-			GSL_NODISCARD const char* cs(const std::uint8_t* data)
-			{
-				return reinterpret_cast<const char*>(data);
-			}
-
 			GSL_NODISCARD char* cs(std::uint8_t* data)
 			{
 				return reinterpret_cast<char*>(data);
@@ -45,11 +40,6 @@ namespace utils
 			GSL_NODISCARD const std::uint8_t* cs(const char* data)
 			{
 				return reinterpret_cast<const std::uint8_t*>(data);
-			}
-
-			GSL_NODISCARD std::uint8_t* cs(char* data)
-			{
-				return reinterpret_cast<std::uint8_t*>(data);
 			}
 
 			GSL_NODISCARD unsigned long ul(const std::size_t value)
