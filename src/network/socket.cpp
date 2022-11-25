@@ -10,7 +10,7 @@ namespace network
 	namespace
 	{
 #ifdef _WIN32
-		[[maybe_unused]] class wsa_initializer
+		GSL_NODISCARD class wsa_initializer
 		{
 		public:
 			wsa_initializer()
