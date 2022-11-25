@@ -15,7 +15,7 @@ namespace utils
 	{
 		std::lock_guard<std::mutex> _(this->mutex_);
 
-		for (auto& data : this->pool_)
+		for (const auto& data : this->pool_)
 		{
 			memory::free(data);
 		}
@@ -40,7 +40,7 @@ namespace utils
 		this->free(const_cast<void*>(data));
 	}
 
-	void* memory::allocator::allocate(const size_t length)
+	void* memory::allocator::allocate(const std::size_t length)
 	{
 		std::lock_guard<std::mutex> _(this->mutex_);
 
@@ -63,9 +63,9 @@ namespace utils
 		return data;
 	}
 
-	void* memory::allocate(const size_t length)
+	void* memory::allocate(const std::size_t length)
 	{
-		return calloc(length, 1);
+		return std::calloc(length, 1);
 	}
 
 	char* memory::duplicate_string(const std::string& string)
@@ -77,10 +77,7 @@ namespace utils
 
 	void memory::free(void* data)
 	{
-		if (data)
-		{
-			::free(data);
-		}
+		std::free(data);
 	}
 
 	void memory::free(const void* data)
@@ -88,11 +85,11 @@ namespace utils
 		free(const_cast<void*>(data));
 	}
 
-	bool memory::is_set(const void* mem, const char chr, const size_t length)
+	bool memory::is_set(const void* mem, const char chr, const std::size_t length)
 	{
 		auto* const mem_arr = static_cast<const char*>(mem);
 
-		for (size_t i = 0; i < length; ++i)
+		for (std::size_t i = 0; i < length; ++i)
 		{
 			if (mem_arr[i] != chr)
 			{

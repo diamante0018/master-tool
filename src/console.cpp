@@ -72,7 +72,7 @@ namespace console
 #endif
 
 			if (count < 0) return {};
-			return {buffer, static_cast<size_t>(count)};
+			return {buffer, static_cast<std::size_t>(count)};
 		}
 
 #ifdef _WIN32
@@ -91,7 +91,7 @@ namespace console
 #endif
 		}
 
-		bool apply_color(const std::string& data, const size_t index, const color_type base_color)
+		bool apply_color(const std::string& data, const std::size_t index, const color_type base_color)
 		{
 			if (data[index] != '^' || (index + 1) >= data.size())
 			{
@@ -122,7 +122,7 @@ namespace console
 			lock _{};
 			set_color(base_color);
 
-			for (size_t i = 0; i < line.size(); ++i)
+			for (std::size_t i = 0; i < line.size(); ++i)
 			{
 				if (apply_color(line, i, base_color))
 				{
