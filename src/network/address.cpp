@@ -8,7 +8,7 @@ namespace network
 {
 	address::address()
 	{
-		std::memset(&this->address_, 0, sizeof(this->address_));
+		memset(&this->address_, 0, sizeof(this->address_));
 	}
 
 	address::address(const std::string& addr)
@@ -140,7 +140,7 @@ namespace network
 				if (i->ai_addr->sa_family == AF_INET)
 				{
 					const auto port = this->get_port();
-					std::memcpy(&this->address_, i->ai_addr, sizeof(this->address_));
+					memcpy(&this->address_, i->ai_addr, sizeof(this->address_));
 					this->set_port(port);
 
 					break;
