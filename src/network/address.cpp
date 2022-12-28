@@ -140,7 +140,7 @@ namespace network
 				if (i->ai_addr->sa_family == AF_INET)
 				{
 					const auto port = this->get_port();
-					cpy(&this->address_, i->ai_addr, sizeof(this->address_));
+					memcpy(&this->address_, i->ai_addr, sizeof(this->address_));
 					this->set_port(port);
 
 					break;
