@@ -120,7 +120,7 @@ int main(const int argc, const char** argv)
 		else
 		{
 			usage(argv[0]);
-			return -1;
+			return EXIT_FAILURE;
 		}
 	}
 
@@ -131,9 +131,9 @@ int main(const int argc, const char** argv)
 	catch (const std::exception& ex)
 	{
 		console::error("Fatal error: %s", ex.what());
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	console::log("Terminating tool...");
-	return 0;
+	return EXIT_SUCCESS;
 }
