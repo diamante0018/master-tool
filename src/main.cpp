@@ -89,9 +89,6 @@ namespace
 int main(const int argc, const char** argv)
 {
 	console::set_title("X Labs Master Tool");
-	console::log(
-		"\n                   ___      ___ \n|__/ | |    |     |__  \\_/ |__  \n|  \\ | |___ |___ .|___ / \\ |___ \n"
-	);
 	console::log("Starting X Labs Master Tool");
 
 	// Parse command-line flags
