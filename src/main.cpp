@@ -61,14 +61,14 @@ namespace
 			const auto packet = format_command(true);
 			s.send(master, packet);
 
-			console::log("Sent kill command to %s", master.to_string().data());
+			console::info("Sent kill command to %s", master.to_string().data());
 		}
 		else if (to_remove != nullptr)
 		{
 			const auto packet = format_command(false);
 			s.send(master, packet);
 
-			console::log("Sent remove command to %s", master.to_string().data());
+			console::info("Sent remove command to %s", master.to_string().data());
 		}
 	}
 

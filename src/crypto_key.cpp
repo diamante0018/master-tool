@@ -50,7 +50,7 @@ namespace crypto_key
 			utils::cryptography::ecc::key key{};
 			if (load_key(key))
 			{
-				console::log("Loaded cryptographic key: %llX", key.get_hash());
+				console::info("Loaded cryptographic key: %llX", key.get_hash());
 				return key;
 			}
 
