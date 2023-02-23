@@ -91,7 +91,7 @@ int main(const int argc, const char** argv)
 	console::set_title("X Labs Master Tool");
 	console::log("Starting X Labs Master Tool");
 
-	// Parse command-line flags
+	// Parse command-line arguments
 	for (auto i = 1; i < argc; i++)
 	{
 		if (std::strcmp(argv[i], "-master") == 0)
