@@ -56,7 +56,7 @@ jobs:
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.exe
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.pdb
 
-  build-lin:
+  build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
     strategy:
@@ -80,6 +80,9 @@ jobs:
           fetch-depth: 0
           lfs: false
 
+      - name: Install Mold
+        uses: rui314/setup-mold@staging
+
       - name: Install dependencies (x64)
         if: matrix.arch == 'x64'
         run: |
@@ -95,7 +98,7 @@ jobs:
       - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
         run: |
           pushd build
-          ../tools/mold/mold -run make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
+          make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
         uses: actions/upload-artifact@v3.1.2
