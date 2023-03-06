@@ -57,6 +57,7 @@
 
 #include <atomic>
 #include <cassert>
+#include <cctype>
 #include <chrono>
 #include <csignal>
 #include <cstdarg>
