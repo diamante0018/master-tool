@@ -12,7 +12,7 @@ namespace crypto_key
 	{
 		bool load_key(utils::cryptography::ecc::key& key)
 		{
-			std::string data{};
+			std::string data;
 			if (!utils::io::read_file("./private.key", &data))
 			{
 				return false;

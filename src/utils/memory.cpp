@@ -65,7 +65,7 @@ namespace utils
 
 	void* memory::allocate(const std::size_t length)
 	{
-		return std::calloc(length, 1);
+		return std::calloc(1, length);
 	}
 
 	char* memory::duplicate_string(const std::string& string)

@@ -223,7 +223,7 @@ namespace utils
 				return std::string(cs(buffer), length);
 			}
 
-			return "";
+			return {};
 		}
 
 		void ecc::key::free()
@@ -273,7 +273,7 @@ namespace utils
 
 		std::string ecc::sign_message(const key& key, const std::string& message)
 		{
-			if (!key.is_valid()) return "";
+			if (!key.is_valid()) return {};
 
 			std::uint8_t buffer[512]{};
 			unsigned long length = sizeof(buffer);
@@ -298,11 +298,11 @@ namespace utils
 
 		bool ecc::encrypt(const key& key, std::string& data)
 		{
-			std::string out_data{};
+			std::string out_data;
 			out_data.resize(std::max(ul(data.size() * 3), ul(0x100)));
 
 			auto out_len = ul(out_data.size());
-			auto crypt = [&]()
+			auto crypt = [&]() -> int
 			{
 				return ecc_encrypt_key(cs(data.data()), ul(data.size()), const_cast<std::uint8_t*>(cs(out_data.data())), &out_len,
 					prng_.get_state(), prng_.get_id(), find_hash("sha512"), &key.get());
@@ -328,11 +328,11 @@ namespace utils
 
 		bool ecc::decrypt(const key& key, std::string& data)
 		{
-			std::string out_data{};
+			std::string out_data;
 			out_data.resize(std::max(ul(data.size() * 3), ul(0x100)));
 
 			auto out_len = ul(out_data.size());
-			auto crypt = [&]()
+			auto crypt = [&]() -> int
 			{
 				return ecc_decrypt_key(cs(data.data()), ul(data.size()), const_cast<std::uint8_t*>(cs(out_data.data())), &out_len, &key.get());
 			};
@@ -359,17 +359,17 @@ namespace utils
 		{
 			rsa_key new_key;
 			rsa_import(cs(key.data()), ul(key.size()), &new_key);
-			const auto _ = gsl::finally([&]()
-				{
-					rsa_free(&new_key);
-				});
+			const auto _ = gsl::finally([&]
+			{
+				rsa_free(&new_key);
+			});
 
 
 			std::string out_data{};
 			out_data.resize(std::max(ul(data.size() * 3), ul(0x100)));
 
 			auto out_len = ul(out_data.size());
-			auto crypt = [&]()
+			auto crypt = [&]() -> int
 			{
 				return rsa_encrypt_key(cs(data.data()), ul(data.size()), const_cast<std::uint8_t*>(cs(out_data.data())), &out_len, cs(hash.data()),
 					ul(hash.size()), prng_.get_state(), prng_.get_id(), find_hash("sha512"), &new_key);
@@ -439,7 +439,7 @@ namespace utils
 			std::string hash(cs(buffer), sizeof(buffer));
 			if (!hex) return hash;
 
-			return string::dump_hex(hash, "");
+			return string::dump_hex(hash, {});
 		}
 
 		std::string aes::encrypt(const std::string& data, const std::string& iv, const std::string& key)
@@ -505,7 +505,7 @@ namespace utils
 			std::string hash(cs(buffer), sizeof(buffer));
 			if (!hex) return hash;
 
-			return string::dump_hex(hash, "");
+			return string::dump_hex(hash, {});
 		}
 
 		std::string sha256::compute(const std::string& data, const bool hex)
@@ -525,7 +525,7 @@ namespace utils
 			std::string hash(cs(buffer), sizeof(buffer));
 			if (!hex) return hash;
 
-			return string::dump_hex(hash, "");
+			return string::dump_hex(hash, {});
 		}
 
 		std::string sha512::compute(const std::string& data, const bool hex)
@@ -545,7 +545,7 @@ namespace utils
 			std::string hash(cs(buffer), sizeof(buffer));
 			if (!hex) return hash;
 
-			return string::dump_hex(hash, "");
+			return string::dump_hex(hash, {});
 		}
 
 		std::string base64::encode(const std::uint8_t* data, const std::size_t len)
@@ -615,7 +615,7 @@ namespace utils
 			std::string result;
 			result.resize(sizeof(std::uint32_t));
 			get_data(const_cast<char*>(result.data()), result.size());
-			return string::dump_hex(result, "");
+			return string::dump_hex(result, {});
 		}
 
 		void random::get_data(void* data, const std::size_t size)
