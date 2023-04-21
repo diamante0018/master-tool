@@ -30,7 +30,7 @@ jobs:
             platform: x64
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.5.2
         with:
           submodules: true
           fetch-depth: 0
@@ -74,7 +74,7 @@ jobs:
             config: release
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.5.2
         with:
           submodules: true
           fetch-depth: 0
@@ -82,12 +82,6 @@ jobs:
 
       - name: Install Mold
         uses: rui314/setup-mold@staging
-
-      - name: Install dependencies (x64)
-        if: matrix.arch == 'x64'
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install libcurl4-gnutls-dev
 
       - name: Generate project files
         run: ./generate.sh
@@ -130,7 +124,7 @@ jobs:
             platform: arm64
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.5.2
         with:
           submodules: true
           fetch-depth: 0
