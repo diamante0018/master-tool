@@ -90,7 +90,7 @@ end
 flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
 
 filter "configurations:Release"
-	optimize "Speed"
+	optimize "Size"
 	defines "NDEBUG"
 	flags "FatalCompileWarnings"
 filter {}
