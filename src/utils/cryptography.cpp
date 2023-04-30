@@ -1,4 +1,5 @@
 #include <std_include.hpp>
+#include <random>
 
 #include "string.hpp"
 #include "cryptography.hpp"
@@ -107,11 +108,18 @@ namespace utils
 
 					int i[4]; // uninitialized data
 					auto* i_ptr = &i;
-					this->add_entropy(reinterpret_cast<std::uint8_t*>(&i), sizeof(i));
-					this->add_entropy(reinterpret_cast<std::uint8_t*>(&i_ptr), sizeof(i_ptr));
+					this->add_entropy(&i, sizeof(i));
+					this->add_entropy(&i_ptr, sizeof(i_ptr));
 
-					auto t = time(nullptr);
-					this->add_entropy(reinterpret_cast<std::uint8_t*>(&t), sizeof(t));
+					const auto t = std::time(nullptr);
+					this->add_entropy(&t, sizeof(t));
+
+					std::random_device rd{};
+					for (auto j = 0; j < 4; ++j)
+					{
+						const auto x = rd();
+						this->add_entropy(&x, sizeof(x));
+					}
 				}
 			};
 
