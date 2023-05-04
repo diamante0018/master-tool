@@ -68,10 +68,6 @@ filter {"system:windows"}
 	systemversion "latest"
 filter {}
 
-filter {"system:macosx"}
-	systemversion "12.0"
-filter {}
-
 symbols "On"
 staticruntime "On"
 editandcontinue "Off"
