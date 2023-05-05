@@ -286,8 +286,10 @@ namespace utils
 			std::uint8_t buffer[512]{};
 			unsigned long length = sizeof(buffer);
 
-			ecc_sign_hash(cs(message.data()), ul(message.size()), buffer, &length, prng_.get_state(), prng_.get_id(),
-				&key.get());
+			const auto hash = sha512::compute(message);
+
+			ecc_sign_hash(cs(hash.data()), ul(hash.size()), buffer, &length, prng_.get_state(), prng_.get_id(),
+			              &key.get());
 
 			return std::string(cs(buffer), length);
 		}
@@ -296,12 +298,15 @@ namespace utils
 		{
 			if (!key.is_valid()) return false;
 
+
+			const auto hash = sha512::compute(message);
+
 			auto result = 0;
 			return (ecc_verify_hash(cs(signature.data()),
-				ul(signature.size()),
-				cs(message.data()),
-				ul(message.size()), &result,
-				&key.get()) == CRYPT_OK && result != 0);
+			                        ul(signature.size()),
+			                        cs(hash.data()),
+			                        ul(hash.size()), &result,
+			                        &key.get()) == CRYPT_OK && result != 0);
 		}
 
 		bool ecc::encrypt(const key& key, std::string& data)
