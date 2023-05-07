@@ -77,7 +77,7 @@ namespace
 		console::error("X Labs Master Tool\n"
 			"Usage: %s OPTIONS\n"
 			"  -master IP - set the target, default: '%s'\n"
-			"  -port PORT - set the port, default: %hu\n"
+			"  -port PORT - set the port, default: '%hu'\n"
 			"  -add IP - remove ip address from the server list\n"
 			"  -remove IP - allow ip address back on the server list\n"
 			"  -reason - set a reason, default: '%s'",
