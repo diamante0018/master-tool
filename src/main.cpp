@@ -25,7 +25,7 @@ namespace
 		std::string cmd = "\xFF\xFF\xFF\xFFpatchkill";
 		const auto line = [&cmd](const std::string& text)
 		{
-			cmd.append(" ");
+			cmd.push_back(' ');
 			cmd.append(text);
 		};
 
