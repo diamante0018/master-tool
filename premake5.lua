@@ -83,7 +83,7 @@ if os.getenv("CI") then
 	defines "CI"
 end
 
-flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
+flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile"}
 
 filter "configurations:Release"
 	optimize "Size"
@@ -114,7 +114,6 @@ filter {"system:windows", "toolset:not msc*"}
 filter {}
 
 filter {"system:windows", "toolset:msc*"}
-	linkoptions {"/IGNORE:4254", "/SAFESEH:NO", "/LARGEADDRESSAWARE", "/PDBCompress"}
 	resincludedirs {
 		"$(ProjectDir)src"
 	}
