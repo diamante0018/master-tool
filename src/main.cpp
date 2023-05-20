@@ -58,6 +58,8 @@ namespace
 
 		if (to_kill != nullptr)
 		{
+			console::info("Attempting to kill %s", to_kill);
+
 			const auto packet = format_command(true);
 			s.send(master, packet);
 
@@ -65,6 +67,8 @@ namespace
 		}
 		else if (to_remove != nullptr)
 		{
+			console::info("Attempting to restore %s", to_remove);
+
 			const auto packet = format_command(false);
 			s.send(master, packet);
 
