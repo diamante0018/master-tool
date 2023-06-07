@@ -14,7 +14,7 @@ namespace
 {
 	utils::cryptography::ecc::key key;
 
-	const char* master_address = "master.xlabs.dev";
+	const char* master_address = "master.alterware.dev";
 	std::uint16_t master_port = 20810;
 	const char* to_kill = nullptr;
 	const char* to_remove = nullptr;
@@ -78,7 +78,7 @@ namespace
 
 	void usage(const char* prog)
 	{
-		console::error("X Labs Master Tool\n"
+		console::error("AlterWare Master Tool\n"
 			"Usage: %s OPTIONS\n"
 			"  -master IP - set the target, default: '%s'\n"
 			"  -port PORT - set the port, default: '%hu'\n"
@@ -92,8 +92,8 @@ namespace
 
 int main(const int argc, const char** argv)
 {
-	console::set_title("X Labs Master Tool");
-	console::log("Starting X Labs Master Tool");
+	console::set_title("AlterWare Master Tool");
+	console::log("Starting AlterWare Master Tool");
 
 	// Parse command-line arguments
 	for (auto i = 1; i < argc; i++)

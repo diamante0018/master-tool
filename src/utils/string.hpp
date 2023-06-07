@@ -1,20 +1,18 @@
 #pragma once
 #include "memory.hpp"
 
-#ifndef ARRAYSIZE
 template <class Type, std::size_t n>
-std::size_t ARRAYSIZE(Type (&)[n]) { return n; }
-#endif
+constexpr auto ARRAY_COUNT(Type(&)[n]) { return n; }
 
 namespace utils
 {
 	namespace string
 	{
-		template <std::size_t Buffers, std::size_t MinBufferSize>
+		template <std::size_t buffers, std::size_t min_buffer_size>
 		class va_provider final
 		{
 		public:
-			static_assert(Buffers != 0 && MinBufferSize != 0, "Buffers and MinBufferSize mustn't be 0");
+			static_assert(buffers != 0 && min_buffer_size != 0, "buffers and min_buffer_size mustn't be 0");
 
 			va_provider() : current_buffer_(0)
 			{
@@ -22,10 +20,10 @@ namespace utils
 
 			char* get(const char* format, va_list ap)
 			{
-				++this->current_buffer_ %= ARRAYSIZE(this->string_pool_);
+				++this->current_buffer_ %= ARRAY_COUNT(this->string_pool_);
 				auto entry = &this->string_pool_[this->current_buffer_];
 
-				if (!entry->size || !entry->buffer)
+				if (!entry->size_ || !entry->buffer_)
 				{
 					throw std::runtime_error("String pool not initialized");
 				}
@@ -33,9 +31,9 @@ namespace utils
 				while (true)
 				{
 #ifdef _WIN32
-					const int res = vsnprintf_s(entry->buffer, entry->size, _TRUNCATE, format, ap);
+					const int res = vsnprintf_s(entry->buffer_, entry->size_, _TRUNCATE, format, ap);
 #else
-					const int res = vsnprintf(entry->buffer, entry->size, format, ap);
+					const int res = vsnprintf(entry->buffer_, entry->size_, format, ap);
 #endif
 
 					if (res > 0) break; // Success
@@ -44,44 +42,44 @@ namespace utils
 					entry->double_size();
 				}
 
-				return entry->buffer;
+				return entry->buffer_;
 			}
 
 		private:
 			class entry final
 			{
 			public:
-				explicit entry(const std::size_t _size = MinBufferSize) : size(_size), buffer(nullptr)
+				explicit entry(const std::size_t size = min_buffer_size) : size_(size), buffer_(nullptr)
 				{
-					if (this->size < MinBufferSize) this->size = MinBufferSize;
+					if (this->size_ < min_buffer_size) this->size_ = min_buffer_size;
 					this->allocate();
 				}
 
 				~entry()
 				{
-					if (this->buffer) memory::get_allocator()->free(this->buffer);
-					this->size = 0;
-					this->buffer = nullptr;
+					if (this->buffer_) memory::get_allocator()->free(this->buffer_);
+					this->size_ = 0;
+					this->buffer_ = nullptr;
 				}
 
 				void allocate()
 				{
-					if (this->buffer) memory::get_allocator()->free(this->buffer);
-					this->buffer = memory::get_allocator()->allocate_array<char>(this->size + 1);
+					if (this->buffer_) memory::get_allocator()->free(this->buffer_);
+					this->buffer_ = memory::get_allocator()->allocate_array<char>(this->size_ + 1);
 				}
 
 				void double_size()
 				{
-					this->size *= 2;
+					this->size_ *= 2;
 					this->allocate();
 				}
 
-				std::size_t size;
-				char* buffer;
+				std::size_t size_;
+				char* buffer_;
 			};
 
 			std::size_t current_buffer_;
-			entry string_pool_[Buffers];
+			entry string_pool_[buffers];
 		};
 
 		const char* va(const char* fmt, ...);

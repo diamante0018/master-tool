@@ -49,9 +49,6 @@
 #include <gsl/gsl>
 
 #ifdef _WIN32
-#pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "ws2_32.lib")
-#pragma comment(lib, "urlmon.lib" )
-#pragma comment(lib, "iphlpapi.lib")
 
 #endif
