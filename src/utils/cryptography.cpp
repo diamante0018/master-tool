@@ -377,7 +377,6 @@ namespace utils
 				rsa_free(&new_key);
 			});
 
-
 			std::string out_data{};
 			out_data.resize(std::max(ul(data.size() * 3), ul(0x100)));
 
