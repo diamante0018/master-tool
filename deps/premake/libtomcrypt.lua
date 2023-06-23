@@ -50,8 +50,12 @@ function libtomcrypt.project()
 
 		removedefines {
 			"_DLL",
-			"_USRDLL"
+			"_USRDLL",
 		}
+
+		if os.istarget("darwin") then
+			buildoptions "-march=native"
+		end
 
 		linkoptions {
 			"-IGNORE:4221"
