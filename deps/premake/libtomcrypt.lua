@@ -51,7 +51,6 @@ function libtomcrypt.project()
 		removedefines {
 			"_DLL",
 			"_USRDLL",
-			"LTC_AES_NI",
 		}
 
 		if os.istarget("darwin") then
