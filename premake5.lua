@@ -30,8 +30,8 @@ end
 
 dependencies.load()
 
-workspace "xlabs-master-tool"
-startproject "xlabs-master-tool"
+workspace "alterware-master-tool"
+startproject "alterware-master-tool"
 location "./build"
 objdir "%{wks.location}/obj"
 targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
@@ -96,9 +96,11 @@ filter "configurations:Debug"
 	defines {"DEBUG", "_DEBUG"}
 filter {}
 
-project "xlabs-master-tool"
+project "alterware-master-tool"
 kind "ConsoleApp"
 language "C++"
+
+targetname "alterware-master-tool"
 
 pchheader "std_include.hpp"
 pchsource "src/std_include.cpp"

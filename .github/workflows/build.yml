@@ -51,15 +51,15 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
-        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/xlabs-master-tool.sln
+        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/alterware-master-tool.sln
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
         uses: actions/upload-artifact@v3.1.2
         with:
           name: Windows ${{matrix.configuration}} ${{matrix.arch}} binaries
           path: |
-            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.exe
-            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool.pdb
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.exe
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.pdb
 
   build-linux:
     name: Build Linux
@@ -106,12 +106,12 @@ jobs:
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
 
-      - name: Set up CC environment variables
+      - name: Set up CC environment variable
         if: matrix.arch == 'arm64'
         run: |
           echo "CC=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
 
-      - name: Set up CXX environment variables
+      - name: Set up CXX environment variable
         if: matrix.arch == 'arm64'
         run: |
           echo "CXX=aarch64-linux-gnu-g++" >> $GITHUB_ENV
@@ -126,7 +126,7 @@ jobs:
         with:
           name: Linux ${{matrix.configuration}} ${{matrix.arch}} binaries
           path: |
-            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
 
   build-mac:
     name: Build macOS
@@ -175,4 +175,4 @@ jobs:
         with:
           name: macOS ${{matrix.configuration}} ${{matrix.arch}} binaries
           path: |
-            build/bin/${{matrix.arch}}/${{matrix.configuration}}/xlabs-master-tool
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
