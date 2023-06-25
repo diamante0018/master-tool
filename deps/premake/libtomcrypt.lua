@@ -57,6 +57,10 @@ function libtomcrypt.project()
 			filter "platforms:x64"
 				buildoptions "-march=native"
 			filter {}
+
+			filter "platforms:arm64"
+				buildoptions "-mcpu=apple-m1"
+			filter {}
 		end
 
 		warnings "Off"

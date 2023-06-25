@@ -39,7 +39,7 @@ targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 configurations {"Debug", "Release"}
 
 if os.istarget("darwin") then
-	platforms {"x64"}
+	platforms {"x64", "arm64"}
 else
 	platforms {"x86", "x64", "arm64"}
 end
@@ -77,6 +77,13 @@ characterset "ASCII"
 if os.istarget("linux") or os.istarget("darwin") then
 	buildoptions "-pthread"
 	linkoptions "-pthread"
+end
+
+if os.istarget("darwin") then
+	filter "platforms:arm64"
+		buildoptions "-arch arm64"
+		linkoptions "-arch arm64"
+	filter {}
 end
 
 if os.getenv("CI") then
