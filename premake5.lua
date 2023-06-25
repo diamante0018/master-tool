@@ -82,7 +82,7 @@ end
 if os.istarget("darwin") then
 	filter "platforms:arm64"
 		buildoptions "-arch arm64"
-	filter{}
+	filter {}
 end
 
 if os.getenv("CI") then
