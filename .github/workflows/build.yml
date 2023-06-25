@@ -165,9 +165,6 @@ jobs:
         run: |
           pushd build
           make config=${{matrix.config}}_${{matrix.arch}} -j$(sysctl -n hw.logicalcpu)
-        env:
-          CC: clang
-          CXX: clang++
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
         uses: actions/upload-artifact@v3.1.2

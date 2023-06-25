@@ -79,6 +79,10 @@ if os.istarget("linux") or os.istarget("darwin") then
 	linkoptions "-pthread"
 end
 
+if os.istarget("darwin") then
+	buildoptions "-arch arm64"
+end
+
 if os.getenv("CI") then
 	defines "CI"
 end
