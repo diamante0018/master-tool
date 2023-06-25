@@ -53,16 +53,6 @@ function libtomcrypt.project()
 			"_USRDLL",
 		}
 
-		if os.istarget("darwin") then
-			filter "platforms:arm64"
-				buildoptions "-mcpu=apple-m1"
-			filter {}
-
-			filter "platforms:x64"
-				buildoptions "-march=native"
-			filter {}
-		end
-
 		linkoptions {
 			"-IGNORE:4221"
 		}
