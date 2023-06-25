@@ -39,7 +39,7 @@ targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 configurations {"Debug", "Release"}
 
 if os.istarget("darwin") then
-	platforms {"x64"}
+	platforms {"x64", "arm64"}
 else
 	platforms {"x86", "x64", "arm64"}
 end

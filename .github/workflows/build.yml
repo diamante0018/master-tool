@@ -139,6 +139,7 @@ jobs:
           - Release
         arch:
           - x64
+          - arm64
         include:
           - configuration: Debug
             config: debug
@@ -146,6 +147,8 @@ jobs:
             config: release
           - arch: x64
             platform: x64
+          - arch: arm64
+            platform: arm64
     steps:
       - name: Check out files
         uses: actions/checkout@v3.5.3
