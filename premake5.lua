@@ -82,7 +82,6 @@ end
 if os.istarget("darwin") then
 	filter "platforms:arm64"
 		buildoptions {
-			"-arch arm64",
 			"--target=aarch64-apple-darwin"
 		}
 	filter {}
