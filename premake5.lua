@@ -129,6 +129,14 @@ filter {"system:windows", "toolset:msc*"}
 	}
 filter {}
 
+if os.istarget("darwin") then
+	filter "platforms:arm64"
+		buildoptions {
+			"-arch arm64"
+		}
+	filter {}
+end
+
 dependencies.imports()
 
 group "Dependencies"

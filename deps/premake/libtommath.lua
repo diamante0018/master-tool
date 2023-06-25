@@ -46,9 +46,13 @@ function libtommath.project()
 			"_USRDLL"
 		}
 
-		linkoptions {
-			"-IGNORE:4221"
-		}
+		if os.istarget("darwin") then
+			filter "platforms:arm64"
+				buildoptions {
+					"-arch arm64"
+				}
+			filter {}
+		end
 
 		warnings "Off"
 		kind "StaticLib"
