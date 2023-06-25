@@ -82,7 +82,7 @@ end
 if os.istarget("darwin") then
 	filter "platforms:arm64"
 		buildoptions {
-			"-mcpu=apple-a14"
+			"-arch arm64"
 		}
 	filter {}
 end
