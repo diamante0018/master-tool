@@ -134,14 +134,11 @@ jobs:
           - Release
         arch:
           - x64
-          - arm64
         include:
           - configuration: Release
             config: release
           - arch: x64
             platform: x64
-          - arch: arm64
-            platform: arm64
     steps:
       - name: Check out files
         uses: actions/checkout@v3.5.3
@@ -165,9 +162,6 @@ jobs:
         run: |
           pushd build
           make config=${{matrix.config}}_${{matrix.arch}} -j$(sysctl -n hw.logicalcpu)
-        env:
-          CC: clang
-          CXX: clang++
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
         uses: actions/upload-artifact@v3.1.2

@@ -53,6 +53,12 @@ function libtomcrypt.project()
 			"_USRDLL",
 		}
 
+		if os.istarget("darwin") then
+			filter "platforms:x64"
+				buildoptions "-march=native"
+			filter {}
+		end
+
 		warnings "Off"
 		kind "StaticLib"
 end
