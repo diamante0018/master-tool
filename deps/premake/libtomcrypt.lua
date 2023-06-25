@@ -54,12 +54,10 @@ function libtomcrypt.project()
 		}
 
 		if os.istarget("darwin") then
-			buildoptions "-march=native"
+			filter "platforms:x64"
+				buildoptions "-march=native"
+			filter {}
 		end
-
-		linkoptions {
-			"-IGNORE:4221"
-		}
 
 		warnings "Off"
 		kind "StaticLib"

@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Debug
           - Release
         arch:
           - x64
@@ -68,14 +67,11 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Debug
           - Release
         arch:
           - x64
           - arm64
         include:
-          - configuration: Debug
-            config: debug
           - configuration: Release
             config: release
     steps:
@@ -135,13 +131,10 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Debug
           - Release
         arch:
           - x64
         include:
-          - configuration: Debug
-            config: debug
           - configuration: Release
             config: release
           - arch: x64

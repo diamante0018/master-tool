@@ -46,10 +46,6 @@ function libtommath.project()
 			"_USRDLL"
 		}
 
-		linkoptions {
-			"-IGNORE:4221"
-		}
-
 		warnings "Off"
 		kind "StaticLib"
 end
