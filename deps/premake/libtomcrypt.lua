@@ -51,13 +51,8 @@ function libtomcrypt.project()
 		removedefines {
 			"_DLL",
 			"_USRDLL",
+			"LTC_AES_NI",
 		}
-
-		if os.istarget("darwin") then
-			filter "platforms:x64"
-				buildoptions "-march=native"
-			filter {}
-		end
 
 		linkoptions {
 			"-IGNORE:4221"
