@@ -88,9 +88,6 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install crossbuild-essential-arm64
 
-      - name: Install Mold
-        uses: rui314/setup-mold@staging
-
       - name: Install Premake5
         uses: abel0b/setup-premake@v2.2
         with:
@@ -102,20 +99,13 @@ jobs:
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
 
-      - name: Set up CC environment variable
-        if: matrix.arch == 'arm64'
-        run: |
-          echo "CC=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
-
-      - name: Set up CXX environment variable
-        if: matrix.arch == 'arm64'
-        run: |
-          echo "CXX=aarch64-linux-gnu-g++" >> $GITHUB_ENV
-
       - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
         run: |
           pushd build
           make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
+        env:
+          CC: clang
+          CXX: clang++
 
       - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
         uses: actions/upload-artifact@v3.1.2
