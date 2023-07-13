@@ -56,16 +56,17 @@ filter "platforms:arm64"
 	architecture "ARM64"
 filter {}
 
+filter {"system:windows"}
+	toolset "clang"
+	systemversion "latest"
+filter {}
+
 filter {"language:C++", "toolset:not msc*"}
 	buildoptions "-std=c++14"
 filter {}
 
 filter "toolset:msc*"
 	buildoptions "/std:c++14"
-filter {}
-
-filter {"system:windows"}
-	systemversion "latest"
 filter {}
 
 symbols "On"
