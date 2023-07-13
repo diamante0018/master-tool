@@ -38,6 +38,9 @@ targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 
 configurations {"Debug", "Release"}
 
+language "C++"
+cppdialect "C++14"
+
 if os.istarget("darwin") then
 	platforms {"x64", "arm64"}
 else
@@ -56,15 +59,8 @@ filter "platforms:arm64"
 	architecture "ARM64"
 filter {}
 
-filter {"language:C++", "toolset:not msc*"}
-	buildoptions "-std=c++14"
-filter {}
-
-filter "toolset:msc*"
-	buildoptions "/std:c++14"
-filter {}
-
 filter {"system:windows"}
+	toolset "clang"
 	systemversion "latest"
 filter {}
 
