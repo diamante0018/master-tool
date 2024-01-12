@@ -36,7 +36,7 @@ location "./build"
 objdir "%{wks.location}/obj"
 targetdir "%{wks.location}/bin/%{cfg.platform}/%{cfg.buildcfg}"
 
-configurations {"Debug", "Release"}
+configurations {"debug", "release"}
 
 language "C++"
 cppdialect "C++14"
@@ -76,12 +76,15 @@ filter { "system:linux", "system:macosx" }
 filter {}
 
 if os.istarget("linux") then
-	filter { "platforms:arm64" }
+	filter { "toolset:clang*", "platforms:arm64" }
 		buildoptions "--target=arm64-linux-gnu"
 		linkoptions "--target=arm64-linux-gnu"
 	filter {}
 
-	linkoptions "-fuse-ld=lld"
+	filter { "toolset:clang*" }
+		-- always try to use lld. LD or Gold will not work
+		linkoptions "-fuse-ld=lld"
+	filter {}
 end
 
 filter { "system:macosx", "platforms:arm64" }
@@ -108,7 +111,9 @@ filter {}
 
 project "alterware-master-tool"
 kind "ConsoleApp"
+
 language "C++"
+cppdialect "C++14"
 
 targetname "alterware-master-tool"
 

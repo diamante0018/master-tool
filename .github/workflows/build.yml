@@ -13,6 +13,9 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PREMAKE_VERSION: "5.0.0-beta2"
+
 jobs:
   build-win:
     name: Build Windows
@@ -21,7 +24,8 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Release
+          - debug
+          - release
         arch:
           - x64
         include:
@@ -29,19 +33,19 @@ jobs:
             platform: x64
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@main
         with:
           submodules: true
           fetch-depth: 0
           lfs: false
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@main
 
       - name: Install Premake5
         uses: abel0b/setup-premake@v2.3
         with:
-          version: "5.0.0-beta2"
+          version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
         run: premake5 vs2022
@@ -49,13 +53,13 @@ jobs:
       - name: Set up problem matching
         uses: ammaraskar/msvc-problem-matcher@master
 
-      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
-        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/alterware-master-tool.sln
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
+        run: msbuild /m /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/alterware-master-tool.sln
 
-      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
-        uses: actions/upload-artifact@v3.1.2
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+        uses: actions/upload-artifact@main
         with:
-          name: Windows ${{matrix.configuration}} ${{matrix.arch}} binaries
+          name: windows-${{matrix.arch}}-${{matrix.configuration}}
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.exe
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.pdb
@@ -67,16 +71,14 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Release
+          - debug
+          - release
         arch:
           - x64
           - arm64
-        include:
-          - configuration: Release
-            config: release
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@main
         with:
           submodules: true
           fetch-depth: 0
@@ -91,26 +93,26 @@ jobs:
       - name: Install Premake5
         uses: abel0b/setup-premake@v2.3
         with:
-          version: "5.0.0-beta2"
+          version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
-        run: premake5 gmake2
+        run: premake5 --cc=clang gmake2
 
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
 
-      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
         run: |
           pushd build
-          make config=${{matrix.config}}_${{matrix.arch}} -j$(nproc)
+          make config=${{matrix.configuration}}_${{matrix.arch}} -j$(nproc)
         env:
           CC: clang
           CXX: clang++
 
-      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
-        uses: actions/upload-artifact@v3.1.2
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+        uses: actions/upload-artifact@main
         with:
-          name: Linux ${{matrix.configuration}} ${{matrix.arch}} binaries
+          name: linux-${{matrix.arch}}-${{matrix.configuration}}
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
 
@@ -121,20 +123,14 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Release
+          - debug
+          - release
         arch:
           - x64
           - arm64
-        include:
-          - configuration: Release
-            config: release
-          - arch: x64
-            platform: x64
-          - arch: arm64
-            platform: arm64
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@main
         with:
           submodules: true
           fetch-depth: 0
@@ -143,7 +139,7 @@ jobs:
       - name: Install Premake5
         uses: abel0b/setup-premake@v2.3
         with:
-          version: "5.0.0-beta2"
+          version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
         run: premake5 gmake2
@@ -151,14 +147,14 @@ jobs:
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
 
-      - name: Build ${{matrix.configuration}} ${{matrix.arch}} binaries
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
         run: |
           pushd build
-          make config=${{matrix.config}}_${{matrix.arch}} -j$(sysctl -n hw.logicalcpu)
+          make config=${{matrix.configuration}}_${{matrix.arch}} -j$(sysctl -n hw.logicalcpu)
 
-      - name: Upload ${{matrix.configuration}} ${{matrix.arch}} binaries
-        uses: actions/upload-artifact@v3.1.2
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+        uses: actions/upload-artifact@main
         with:
-          name: macOS ${{matrix.configuration}} ${{matrix.arch}} binaries
+          name: macos-${{matrix.arch}}-${{matrix.configuration}}
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
