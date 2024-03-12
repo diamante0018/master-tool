@@ -28,9 +28,12 @@ jobs:
           - release
         arch:
           - x64
+          - arm64
         include:
           - arch: x64
             platform: x64
+          - arch: arm64
+            platform: arm64
     steps:
       - name: Check out files
         uses: actions/checkout@main
@@ -43,7 +46,7 @@ jobs:
         uses: microsoft/setup-msbuild@main
 
       - name: Install Premake5
-        uses: abel0b/setup-premake@v2.3
+        uses: diamante0018/setup-premake@master
         with:
           version: ${{ env.PREMAKE_VERSION }}
 
@@ -91,7 +94,7 @@ jobs:
           sudo apt-get -y install crossbuild-essential-arm64
 
       - name: Install Premake5
-        uses: abel0b/setup-premake@v2.3
+        uses: diamante0018/setup-premake@master
         with:
           version: ${{ env.PREMAKE_VERSION }}
 
@@ -137,7 +140,7 @@ jobs:
           lfs: false
 
       - name: Install Premake5
-        uses: abel0b/setup-premake@v2.3
+        uses: diamante0018/setup-premake@master
         with:
           version: ${{ env.PREMAKE_VERSION }}
 
