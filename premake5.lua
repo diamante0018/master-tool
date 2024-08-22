@@ -60,7 +60,6 @@ filter "platforms:arm64"
 filter {}
 
 filter {"system:windows"}
-	toolset "clang"
 	systemversion "latest"
 filter {}
 
