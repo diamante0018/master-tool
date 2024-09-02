@@ -121,7 +121,7 @@ jobs:
 
   build-mac:
     name: Build macOS
-    runs-on: macos-13
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
@@ -129,7 +129,6 @@ jobs:
           - debug
           - release
         arch:
-          - x64
           - arm64
     steps:
       - name: Check out files
