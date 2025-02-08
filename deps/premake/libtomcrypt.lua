@@ -59,7 +59,7 @@ function libtomcrypt.project()
 		filter {}
 
 		filter { "system:macosx", "platforms:x64" }
-			buildoptions "-march=native"
+			buildoptions "-mcpu=x86-64"
 		filter {}
 
 		warnings "Off"
