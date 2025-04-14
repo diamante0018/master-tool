@@ -41,9 +41,11 @@ configurations {"debug", "release"}
 language "C++"
 cppdialect "C++14"
 
-if os.istarget("darwin") then
-	platforms {"x64", "arm64"}
-else
+if os.istarget("linux") then
+	platforms {"x86", "amd64", "arm64"}
+elseif os.istarget("macosx") then
+	platforms {"amd64", "arm64"}
+else 
 	platforms {"x86", "x64", "arm64"}
 end
 
@@ -53,6 +55,10 @@ filter {}
 
 filter "platforms:x64"
 	architecture "x86_64"
+filter {}
+
+filter "platforms:amd64"
+architecture "x86_64"
 filter {}
 
 filter "platforms:arm64"
@@ -75,6 +81,7 @@ filter { "system:linux", "system:macosx" }
 filter {}
 
 if os.istarget("linux") then
+	-- this supports cross-compilation for arm64
 	filter { "toolset:clang*", "platforms:arm64" }
 		buildoptions "--target=arm64-linux-gnu"
 		linkoptions "--target=arm64-linux-gnu"
@@ -86,7 +93,7 @@ if os.istarget("linux") then
 	filter {}
 end
 
-filter { "system:macosx", "platforms:x64" }
+filter { "system:macosx", "platforms:amd64" }
 	buildoptions "-arch x86_64"
 	linkoptions "-arch x86_64"
 filter {}
@@ -105,7 +112,7 @@ flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile"}
 filter "configurations:Release"
 	optimize "Size"
 	defines "NDEBUG"
-	flags "FatalCompileWarnings"
+	fatalwarnings {"All"}
 filter {}
 
 filter "configurations:Debug"

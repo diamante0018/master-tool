@@ -14,22 +14,27 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PREMAKE_VERSION: "5.0.0-beta2"
+  PREMAKE_VERSION: "5.0.0-beta6"
 
 jobs:
-  build-win:
+  build-windows:
     name: Build Windows
     runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
         configuration:
-          - debug
           - release
+        compiler:
+          - msvc
+          - clang
         arch:
+          - x86
           - x64
           - arm64
         include:
+          - arch: x86
+            platform: Win32
           - arch: x64
             platform: x64
           - arch: arm64
@@ -50,19 +55,24 @@ jobs:
         with:
           version: ${{ env.PREMAKE_VERSION }}
 
-      - name: Generate project files
+      - name: Generate project files (clang)
+        if: matrix.compiler == 'clang'
+        run: premake5 --cc=${{matrix.compiler}} vs2022
+
+      - name: Generate project files (msvc)
+        if: matrix.compiler == 'msvc'
         run: premake5 vs2022
 
       - name: Set up problem matching
         uses: ammaraskar/msvc-problem-matcher@master
 
-      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} ${{matrix.compiler}} binaries
         run: msbuild /m /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} build/alterware-master-tool.sln
 
-      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} ${{matrix.compiler}} binaries
         uses: actions/upload-artifact@main
         with:
-          name: windows-${{matrix.arch}}-${{matrix.configuration}}
+          name: windows-${{matrix.arch}}-${{matrix.configuration}}-${{matrix.compiler}}
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.exe
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool.pdb
@@ -74,11 +84,9 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - debug
           - release
         arch:
-          - x64
-          - arm64
+          - amd64
     steps:
       - name: Check out files
         uses: actions/checkout@main
@@ -87,19 +95,13 @@ jobs:
           fetch-depth: 0
           lfs: false
 
-      - name: Install dependencies (arm64)
-        if: matrix.arch == 'arm64'
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install crossbuild-essential-arm64
-
       - name: Install Premake5
         uses: diamante0018/setup-premake@master
         with:
           version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
-        run: premake5 --cc=clang gmake2
+        run: premake5 --cc=clang gmake
 
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
@@ -119,6 +121,79 @@ jobs:
           path: |
             build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
 
+  prebuild-linux-arm64:
+    name: Prebuild Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out files
+        uses: actions/checkout@main
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Install Premake5
+        uses: diamante0018/setup-premake@master
+        with:
+          version: ${{ env.PREMAKE_VERSION }}
+
+      - name: Generate project files
+        run: premake5 --cc=clang gmake
+
+      - name: Upload project files
+        uses: actions/upload-artifact@main
+        with:
+          name: linux-project-files
+          path: |
+            build/
+
+  build-linux-arm64:
+    name: Build Linux
+    runs-on: ${{ matrix.os }}
+    needs: prebuild-linux-arm64
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - release
+        arch:
+          - arm64
+        include:
+          - arch: arm64
+            os: ubuntu-24.04-arm
+    steps:
+      - name: Check out files
+        uses: actions/checkout@main
+        with:
+          submodules: true
+          fetch-depth: 0
+          lfs: false
+
+      - name: Create the build directory
+        run: mkdir -p build
+
+      - name: Download project files
+        uses: actions/download-artifact@main
+        with:
+          name: linux-project-files
+          path: build/
+
+      - name: Build ${{matrix.arch}} ${{matrix.configuration}} binaries
+        working-directory: ${{ github.workspace }}
+        run: |
+          pushd build
+          make config=${{matrix.configuration}}_${{matrix.arch}} -j$(nproc)
+        env:
+         CC: clang
+         CXX: clang++
+
+      - name: Upload ${{matrix.arch}} ${{matrix.configuration}} binaries
+        uses: actions/upload-artifact@main
+        with:
+          name: linux-${{matrix.arch}}-${{matrix.configuration}}
+          path: |
+            build/bin/${{matrix.arch}}/${{matrix.configuration}}/alterware-master-tool
+
   build-mac:
     name: Build macOS
     runs-on: macos-latest
@@ -126,10 +201,9 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - debug
           - release
         arch:
-          - x64
+          - amd64
           - arm64
     steps:
       - name: Check out files
@@ -145,7 +219,7 @@ jobs:
           version: ${{ env.PREMAKE_VERSION }}
 
       - name: Generate project files
-        run: premake5 gmake2
+        run: premake5 gmake
 
       - name: Set up problem matching
         uses: ammaraskar/gcc-problem-matcher@master
