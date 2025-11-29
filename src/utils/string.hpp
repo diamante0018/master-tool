@@ -30,16 +30,16 @@ namespace utils
 
 				while (true)
 				{
-#ifdef _WIN32
-					const int res = vsnprintf_s(entry->buffer_, entry->size_, _TRUNCATE, format, ap);
-#else
-					const int res = vsnprintf(entry->buffer_, entry->size_, format, ap);
-#endif
+					const auto res = vsnprintf(entry->buffer_, entry->size_, format, ap);
+					if (res < 0) return nullptr; // Error
 
-					if (res > 0) break; // Success
-					if (res == 0) return nullptr; // Error
+					if (static_cast<std::size_t>(res) >= entry->size_)
+					{
+						entry->double_size();
+						continue;
+					}
 
-					entry->double_size();
+					break; // >= 0 Success
 				}
 
 				return entry->buffer_;
