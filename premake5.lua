@@ -107,7 +107,7 @@ if os.getenv("CI") then
 	defines "CI"
 end
 
-flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile"}
+multiprocessorcompile "On"
 
 filter "configurations:Release"
 	optimize "Size"
