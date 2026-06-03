@@ -19,7 +19,7 @@ env:
 jobs:
   build-windows:
     name: Build Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -37,8 +37,6 @@ jobs:
             platform: Win32
           - arch: x64
             platform: x64
-          - arch: arm64
-            platform: arm64
     steps:
       - name: Check out files
         uses: actions/checkout@main
